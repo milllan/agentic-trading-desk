@@ -135,6 +135,41 @@ Before selecting a decision, the script detects **flags** — specific indicator
 
 ---
 
+## 🤖 Claude Code Integration
+
+To use this project as a **Skill** with Claude Code for automated trading analysis:
+
+### 1. Add the Skill
+Place the `SKILL.md` file in your Claude Code skills directory (typically `~/.claude/code/skills/`):
+```bash
+# Clone or copy this repository to your skills folder
+cp -r /path/to/agentic-trading-desk ~/.claude/code/skills/agentic-trading-desk
+```
+
+Or reference it directly from this repository.
+
+### 2. Agent Operation
+Once loaded, Claude Code will:
+* Automatically use this skill when you ask to analyze tickers, review positions, or make trading decisions
+* Fetch data via Robinhood MCP protocol
+* Call the Python scripts (`scripts/indicators.py`, `scripts/score.py`, `scripts/macro_pillar.py`) for deterministic calculations
+* Present the three-pillar scorecard with actionable decisions
+* **Never execute orders without your explicit confirmation**
+
+### 3. Example Workflow
+```
+You: "Analyze AAPL for a potential entry"
+→ Claude fetches AAPL historicals via Robinhood MCP
+→ Runs: python3 scripts/indicators.py (raw indicators)
+→ Runs: python3 scripts/score.py (three-pillar scorecard + decision)
+→ Returns: Scorecard, flags, and suggested action (RE-ENTRY, HOLD, EXIT, etc.)
+→ You confirm before any execution
+```
+
+The agent operates under the principle: **AI fetches data and presents analysis; scripts perform deterministic calculations; you decide and approve all executions.**
+
+---
+
 ## 📰 External Qualitative Context (Reinforcement)
 
 To complement the purely technical nature of the deterministic scripts, the AI agent integrates a real-time **qualitative reinforcement analysis** before presenting the final recommendation:
