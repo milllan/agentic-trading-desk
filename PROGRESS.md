@@ -28,6 +28,6 @@ yahoo_fetch.py  →  {symbol, close[], price}  →  score.py / indicators.py / m
 The Robinhood MCP path remains the default and is fully preserved.
 
 ### Next Steps
-- **IBKR trading integration** — read positions + manual-confirm order placement via Interactive Brokers TWS/IB Gateway API. Tracked in fork issue: `[IBKR issue link — fill after filing]`. Future enhancement, not blocking.
-- **Alternative data sources** — investigate free-tier APIs (Tiingo/FMP) as a fallback to Yahoo's undocumented endpoint if rate-limiting becomes a problem at watchlist scale. Tracked in fork issue: `[alt-data issue link — fill after filing]`.
+- **IBKR trading integration** — read positions + manual-confirm order placement via Interactive Brokers TWS/IB Gateway API. Tracked in [#2](https://github.com/milllan/agentic-trading-desk/issues/2). Future enhancement, not blocking.
+- **Alternative data sources** — investigate free-tier APIs (Tiingo/FMP) as a fallback to Yahoo's undocumented endpoint if rate-limiting becomes a problem at watchlist scale. Tracked in [#3](https://github.com/milllan/agentic-trading-desk/issues/3).
 - **Sync installed skill** — after the PR merges to `main`, sync the skill at `~/.codex/skills/agentic-trading-desk/` from this fork (separate small task).
