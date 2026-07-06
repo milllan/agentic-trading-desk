@@ -6,9 +6,9 @@ DETERMINISTIC indicator engine for the trading desk's exact stack:
   EMA 20/50/200 · RSI-14 (Wilder) · MACD 12/26/9 · TRIX-15 (signal 9) · Bollinger 20/2
 
 Purpose: Claude should NEVER calculate these values by "reasoning" over bars.
-The correct flow is: Claude fetches raw bars via Robinhood MCP
-(get_equity_historicals, ~290 daily bars) -> passes them to this module ->
-numbers are computed, not estimated.
+The correct flow is: Claude fetches raw bars via yahoo_fetch.py
+(~290 daily bars) -> passes them to this module -> numbers are computed,
+not estimated.
 
 stdlib only. Python 3.9+. Input: list of close prices old->new.
 For Bollinger %B precision, high/low can be passed, but close is enough.
