@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.1.1 — 2026-07-06
+
+### Fixed
+- `scripts/yahoo_fetch.py` — defensive parsing for malformed Yahoo responses (Gemini Code Assist review, HIGH). Catches `json.JSONDecodeError` (HTML captcha/error pages), uses safe `.get()` navigation, and validates `timestamps`/`closes` are non-empty before `zip()`. All error paths now raise clean `SystemExit` messages instead of uncaught exceptions. Happy path output unchanged.
+- `SKILL.md` — documented the `holding`/`macro_score` enrich step in the Yahoo flow (Codex review, P1). The canonical flow previously fed `yahoo_fetch.py` output directly to `score.py`, defaulting to `holding=False` and skipping the Macro-Sentiment pillar — producing flat-entry advice instead of holder-specific guidance. Verified: identical AAPL data returns HOLD (enriched) vs WAIT (unenriched).
+
 ## v1.1.0 — 2026-07-06
 
 ### Added
