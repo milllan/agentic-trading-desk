@@ -53,11 +53,29 @@ If you do not use Robinhood MCP (e.g. you trade manually on another broker and o
 **To analyze a ticker (canonical token-efficient flow):**
 ```bash
 python3 scripts/yahoo_fetch.py TICKER > /tmp/TICKER.json   # do NOT print into context
+# enrich: add holding + the session's macro_score before scoring (see below)
 python3 scripts/score.py /tmp/TICKER.json
 ```
 Redirect `yahoo_fetch.py` output to a file and pass the file path to `score.py`. The fetch payload is ~14K tokens if printed; the scorecard from `score.py` is ~183 tokens. Only the scorecard needs to be read into context. Avoid the manual `curl 'https://query1.finance.yahoo.com/...' | python3 -c "..."` pattern — it pulls the full payload into context and re-derives the fetch logic every session.
 
 `yahoo_fetch.py` defaults to `--range 2y` (~500 bars, well above the 220-bar EMA200 threshold) and `--bars 290`, and returns `{symbol, currency, regular_market_price, dates[], close[]}`. The `regular_market_price` doubles as the live quote for tickers you do not hold.
+
+**Enrich before scoring (important):** `yahoo_fetch.py` output contains only price data — it has no `holding` or `macro_score` field. Feeding it directly to `score.py` defaults to `holding=False` (flat) and skips the Macro-Sentiment pillar, which produces flat-entry advice (WAIT / STAY OUT) instead of holder-specific guidance (EXIT / TRIM / HOLD) and drops the macro regime. Before scoring, merge in:
+- **`holding`** — `true` if you have an open position in the ticker at your broker, `false` if flat. The decision cascade behaves differently for holders vs flat (see `decide()` in `score.py`).
+- **`macro_score`** — the integer (-2..+2) produced once per session by the Macro-Sentiment pillar step below.
+
+Example enrich (kept off-context — the intermediate file is never read into the prompt):
+```bash
+python3 - <<'PY'
+import json
+d = json.load(open("/tmp/TICKER.json"))
+d["holding"] = True            # set per your actual position at IBKR / your broker
+d["macro_score"] = 1           # from this session's macro_pillar.py run
+json.dump(d, open("/tmp/TICKER.json", "w"))
+PY
+python3 scripts/score.py /tmp/TICKER.json
+```
+Run the macro pillar first (see next paragraph), then reuse its score for every ticker in the session.
 
 **For the Macro-Sentiment pillar (once per session):** run `yahoo_fetch.py` for each of the 7 ETFs (SPY, RSP, IWM, HYG, LQD, TLT, XLY, XLP), write each to a file, then assemble the `macro_input.json` from the close arrays exactly as in the Robinhood flow above. Get the 10Y-2Y yield spread from Investing.com (web) and inject it as `yield_spread`; if unavailable, the script redistributes its weight.
 
