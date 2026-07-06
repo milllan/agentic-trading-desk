@@ -57,7 +57,9 @@ Run the macro pillar first (see next paragraph), then reuse its score for every 
 
 **For the Macro-Sentiment pillar (once per session):** run `yahoo_fetch.py` for each of the 7 ETFs (SPY, RSP, IWM, HYG, LQD, TLT, XLY, XLP), write each to a file, then assemble the `macro_input.json` from the close arrays. Get the 10Y-2Y yield spread from Investing.com (web) and inject it as `yield_spread`; if unavailable, the script redistributes its weight.
 
-**Note on Yahoo reliability:** the chart endpoint is undocumented and has no SLA — occasional 429s/rate-limiting can occur on heavy batch scans. For analysis-on-demand of a typical watchlist it is reliable; revisit if you hit limits (tracked in a separate issue for free-tier alternatives like Tiingo/FMP).
+**Note on Yahoo reliability:** the chart endpoint is undocumented and has no SLA. Verified 2026-07-06 against this network: 0 failures across 18 requests (6 tickers × 3 attempts), no 429s, no crumb/cookie handshake needed — the `User-Agent: Mozilla/5.0` header alone suffices. General fragility reports (bare curl blocked on some networks/regions) do not apply here. If Yahoo starts failing, pursue FMP free tier (250 req/day, covers HK/JP/DE) — see closed issue #3 for the empirical baseline and the FMP path.
+
+**Ticker-suffix conventions (Yahoo):** US tickers need no suffix. Exchanges use suffixes: HKEX → `.HK` (e.g. `2513.HK`), Tokyo → `.T` (`3350.T`), Frankfurt/XETRA → `.F` (`DN3.F`). **`.DE` does NOT work** for Frankfurt — use `.F`. Some recently-IPO'd tickers may have fewer than 220 bars of history (below the EMA200 threshold); `score.py` handles this with a warning, but trend/momentum scores for those tickers will be less reliable until more history accrues.
 
 ## Computation Flow (Run via Code Execution)
 
