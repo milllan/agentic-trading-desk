@@ -46,6 +46,23 @@ Load the tools with `tool_search` before using them (they are deferred).
 - `Robinhood:get_equity_positions` → open positions by account.
 - `Robinhood:get_realized_pnl` → realized P&L (useful for the Friday review).
 
+## Alternative: Yahoo Finance (broker-agnostic data source)
+
+If you do not use Robinhood MCP (e.g. you trade manually on another broker and only want analysis), use `scripts/yahoo_fetch.py` for the price data instead. It hits Yahoo Finance's public chart endpoint — **no API key required**, pure stdlib.
+
+**To analyze a ticker (canonical token-efficient flow):**
+```bash
+python3 scripts/yahoo_fetch.py TICKER > /tmp/TICKER.json   # do NOT print into context
+python3 scripts/score.py /tmp/TICKER.json
+```
+Redirect `yahoo_fetch.py` output to a file and pass the file path to `score.py`. The fetch payload is ~14K tokens if printed; the scorecard from `score.py` is ~183 tokens. Only the scorecard needs to be read into context. Avoid the manual `curl 'https://query1.finance.yahoo.com/...' | python3 -c "..."` pattern — it pulls the full payload into context and re-derives the fetch logic every session.
+
+`yahoo_fetch.py` defaults to `--range 2y` (~500 bars, well above the 220-bar EMA200 threshold) and `--bars 290`, and returns `{symbol, currency, regular_market_price, dates[], close[]}`. The `regular_market_price` doubles as the live quote for tickers you do not hold.
+
+**For the Macro-Sentiment pillar (once per session):** run `yahoo_fetch.py` for each of the 7 ETFs (SPY, RSP, IWM, HYG, LQD, TLT, XLY, XLP), write each to a file, then assemble the `macro_input.json` from the close arrays exactly as in the Robinhood flow above. Get the 10Y-2Y yield spread from Investing.com (web) and inject it as `yield_spread`; if unavailable, the script redistributes its weight.
+
+**Note on Yahoo reliability:** the chart endpoint is undocumented and has no SLA — occasional 429s/rate-limiting can occur on heavy batch scans. For analysis-on-demand of a typical watchlist it is reliable; revisit if you hit limits (tracked in a separate issue for free-tier alternatives like Tiingo/FMP).
+
 ## Computation Flow (Run via Code Execution)
 
 Scripts are pure stdlib; they do not need internet access. Work in `/home/claude/agentic-trading-desk/scripts`.
