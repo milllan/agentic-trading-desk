@@ -34,6 +34,9 @@ def fetch_bars(ticker: str, range_: str = "2y", interval: str = "1d", bars: int 
         raise SystemExit(f"Yahoo fetch failed for {ticker}: HTTP {e.code}")
     except urllib.error.URLError as e:
         raise SystemExit(f"Yahoo fetch failed for {ticker}: {e}")
+    except json.JSONDecodeError as e:
+        # Yahoo sometimes returns an HTML error/captcha page instead of JSON.
+        raise SystemExit(f"Yahoo returned invalid JSON for {ticker}: {e}")
 
     result = payload.get("chart", {}).get("result")
     if not result:
@@ -41,9 +44,15 @@ def fetch_bars(ticker: str, range_: str = "2y", interval: str = "1d", bars: int 
         raise SystemExit(f"Yahoo returned no data for {ticker}: {err}")
 
     r = result[0]
-    meta = r["meta"]
-    timestamps = r["timestamp"]
-    closes = r["indicators"]["quote"][0]["close"]
+    meta = r.get("meta") or {}
+    timestamps = r.get("timestamp")
+    indicators = r.get("indicators") or {}
+    quote_list = indicators.get("quote") or []
+    quote = quote_list[0] if quote_list else {}
+    closes = quote.get("close")
+
+    if not timestamps or not closes:
+        raise SystemExit(f"Yahoo returned no price history or timestamps for {ticker}")
 
     dates, clean_closes = [], []
     for ts, c in zip(timestamps, closes):
