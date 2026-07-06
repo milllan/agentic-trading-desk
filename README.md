@@ -13,6 +13,7 @@ The project is designed to operate locally and modularly. All technical indicato
 ```mermaid
 graph TD
     A[Robinhood MCP / API] -- Price Historicals / Quotes --> B[Claude / Agentic Core]
+    A2[scripts/yahoo_fetch.py<br/>broker-agnostic] -- Price Historicals / Quote --> B
     C[Investing.com / Web] -- 10Y-2Y Spread / News --> B
     B -- JSON of Daily Closes --> D[scripts/macro_pillar.py]
     B -- JSON of Closes + Holding status --> E[scripts/score.py]
@@ -23,11 +24,15 @@ graph TD
     G -- Order Confirmation --> A
 ```
 
+> **Data source:** `Robinhood MCP / API` is the default. If you do not use Robinhood, `scripts/yahoo_fetch.py` provides the same price history + quote from Yahoo Finance's public endpoint (no API key, no broker account required) — see [SKILL.md](SKILL.md) → "Alternative: Yahoo Finance".
+
+
 ### File Structure
 *   **[SKILL.md](SKILL.md)**: Operations manual and specific guardrails guiding the AI agent's actions.
 *   **[scripts/indicators.py](scripts/indicators.py)**: Mathematical engine to calculate technical indicators without visual estimations.
 *   **[scripts/macro_pillar.py](scripts/macro_pillar.py)**: Macro regime detector and cross-asset sentiment scorer.
 *   **[scripts/score.py](scripts/score.py)**: Evaluator of the three-pillar framework and exit/entry decision engine.
+*   **[scripts/yahoo_fetch.py](scripts/yahoo_fetch.py)**: Optional broker-agnostic price-history fetcher (Yahoo Finance public endpoint). Use instead of Robinhood MCP if you trade on another broker.
 
 ---
 
@@ -64,6 +69,14 @@ Calculated by the [scripts/macro_pillar.py](scripts/macro_pillar.py) cross-asset
 ## 🛠️ Script Usage
 
 The scripts are run via the command line consuming data in JSON format.
+
+### 0. Fetch Price Data (Yahoo Finance — optional, broker-agnostic)
+If you are not using Robinhood MCP, fetch the price history first and write it to a file (do not print into context — see [SKILL.md](SKILL.md) "Alternative: Yahoo Finance" for the rationale):
+```bash
+python3 scripts/yahoo_fetch.py AAPL > aapl.json    # {symbol, close:[...], regular_market_price}
+python3 scripts/score.py aapl.json                 # pass the file to the scoring engine
+```
+Defaults to ~290 daily bars (`--range 2y`, `--bars 290`); no API key required.
 
 ### 1. Raw Indicators Computation
 To obtain the detailed breakdown of all calculated indicators for an asset:
