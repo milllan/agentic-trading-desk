@@ -1,0 +1,55 @@
+{
+  "updated": "2026-07-06",
+  "tickers": [
+    {
+      "symbol": "HKG:2513",
+      "yahoo_symbol": "2513.HK",
+      "name": "Knowledge Atlas Technology Joint Stock Co. Ltd.",
+      "formerly": "Zhipu AI / Beijing Zhipu Huazhang Technology",
+      "exchange": "HKEX",
+      "currency": "HKD",
+      "sector": "AI / Technology",
+      "notes": "Chinese AI company. IPO'd 2026-01-08 — Yahoo has ~118 bars of history (below the 220-bar EMA200 threshold). Expect indicator warnings until ~Q4 2026.",
+      "added": "2025-07-03"
+    },
+    {
+      "symbol": "TYO:3350",
+      "yahoo_symbol": "3350.T",
+      "name": "Metaplanet Inc.",
+      "exchange": "Tokyo Stock Exchange",
+      "currency": "JPY",
+      "sector": "Bitcoin Treasury / Technology",
+      "notes": "Japanese Bitcoin treasury company. Cross-listed Frankfurt (DN3.F) and US OTC (MTPLF).",
+      "added": "2025-07-03"
+    },
+    {
+      "symbol": "DN3.F",
+      "yahoo_symbol": "DN3.F",
+      "name": "Metaplanet Inc.",
+      "exchange": "Frankfurt (XETRA)",
+      "currency": "EUR",
+      "sector": "Bitcoin Treasury / Technology",
+      "notes": "Frankfurt listing. NOTE: Yahoo uses .F suffix for Frankfurt, NOT .DE (DN3.DE returns 404). Same company as TYO:3350 and MTPLF.",
+      "added": "2026-07-06"
+    },
+    {
+      "symbol": "MTPLF",
+      "yahoo_symbol": "MTPLF",
+      "name": "Metaplanet Inc.",
+      "exchange": "OTC (US)",
+      "currency": "USD",
+      "sector": "Bitcoin Treasury / Technology",
+      "notes": "US OTC ticker for Metaplanet. Same company as TYO:3350 and DN3.F. Yahoo has ~400 bars — cleanest history of the three listings.",
+      "added": "2025-07-03"
+    }
+  ],
+  "holdings": [
+    {"symbol": "MSTR", "yahoo_symbol": "MSTR", "name": "MicroStrategy", "note": "Bitcoin treasury play"},
+    {"symbol": "CLSK", "yahoo_symbol": "CLSK", "name": "CleanSpark", "note": "Bitcoin mining"}
+  ],
+  "yahoo_notes": {
+    "verified": "2026-07-06",
+    "reliability": "Tested 18 requests across 6 tickers, 0 failures, 0 rate-limits. User-Agent: Mozilla/5.0 header sufficient; no crumb/cookie needed from this network.",
+    "suffix_convention": "Yahoo uses .HK (HKEX), .T (Tokyo), .F (Frankfurt/XETRA), no suffix (US). DN3.DE does NOT exist — use DN3.F."
+  }
+}

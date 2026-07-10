@@ -5,7 +5,7 @@ macro_pillar.py
 
 Key skill:
   - No FMP. Consumes daily closes (OHLCV close) that you already fetch
-    from Robinhood historicals, in JSON.
+    from Yahoo Finance historicals, in JSON.
   - The 10Y-2Y curve is NOT approximated with treasury ETFs (fragile proxy):
     the spread that you already fetch from Investing.com is injected directly.
     If not provided, its weight (20%) is redistributed proportionally among
@@ -323,7 +323,7 @@ def render(r: MacroResult) -> str:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Macro-Sentiment pillar scorer (cross-asset, Robinhood-compatible).")
+    ap = argparse.ArgumentParser(description="Macro-Sentiment pillar scorer (cross-asset).")
     ap.add_argument("input", nargs="?", help="JSON with close price series. If omitted, runs a synthetic self-test.")
     ap.add_argument("--json", action="store_true", help="Output in JSON format instead of human-readable report.")
     ap.add_argument("--fast", type=int, default=50)
