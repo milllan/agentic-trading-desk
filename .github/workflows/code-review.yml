@@ -7,7 +7,7 @@ permissions:
   pull-requests: write
 jobs:
   openrouter-review:
-    uses: milllan/.github/workflows/gemini-reviewer.yml@f48b47a9ad50288ff4b45d986470a6a1dda2e5c6
+    uses: milllan/.github/workflows/gemini-reviewer.yml@48bb0aba9e0ad9ac9c6eabfb9f00a72b46549719
     with:
       provider: openrouter
       model: tencent/hy3:free
@@ -15,9 +15,23 @@ jobs:
     secrets:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
   nim-review:
-    uses: milllan/.github/workflows/gemini-reviewer.yml@f48b47a9ad50288ff4b45d986470a6a1dda2e5c6
+    uses: milllan/.github/workflows/gemini-reviewer.yml@48bb0aba9e0ad9ac9c6eabfb9f00a72b46549719
     with:
       provider: nim
       model: z-ai/glm-5.2
     secrets:
       NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+  zen-deepseek-review:
+    uses: milllan/.github/workflows/gemini-reviewer.yml@48bb0aba9e0ad9ac9c6eabfb9f00a72b46549719
+    with:
+      provider: zen
+      model: deepseek-v4-flash-free
+    secrets:
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+  zen-mimo-review:
+    uses: milllan/.github/workflows/gemini-reviewer.yml@48bb0aba9e0ad9ac9c6eabfb9f00a72b46549719
+    with:
+      provider: zen
+      model: mimo-v2.5-free
+    secrets:
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
