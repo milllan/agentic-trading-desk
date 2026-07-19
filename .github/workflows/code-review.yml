@@ -7,10 +7,17 @@ permissions:
   pull-requests: write
 jobs:
   openrouter-review:
-    uses: milllan/.github/.github/workflows/gemini-reviewer.yml@ef447b84c89c0c440c99ac8daf50e98e0616382b
+    uses: milllan/.github/workflows/gemini-reviewer.yml@f48b47a9ad50288ff4b45d986470a6a1dda2e5c6
     with:
       provider: openrouter
       model: tencent/hy3:free
       models: tencent/hy3:free anthropic/claude-3.5-haiku google/gemini-flash-1.5
     secrets:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+  nim-review:
+    uses: milllan/.github/workflows/gemini-reviewer.yml@f48b47a9ad50288ff4b45d986470a6a1dda2e5c6
+    with:
+      provider: nim
+      model: z-ai/glm-5.2
+    secrets:
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
